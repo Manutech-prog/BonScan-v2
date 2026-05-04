@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BonScan">
+<meta name="description" content="Scan en beheer kastickets met AI">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>BonScan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-logo">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+        <rect width="64" height="64" rx="16" fill="url(#grad)"/>
+        <path d="M16 20h32M16 28h24M16 36h20M16 44h28" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="46" cy="42" r="10" fill="#22d3ee" fill-opacity=".2"/>
+        <path d="M42 42l3 3 5-5" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="grad" x1="0" y1="0" x2="64" y2="64"><stop stop-color="#1e3a5f"/><stop offset="1" stop-color="#0a1628"/></linearGradient></defs>
+      </svg>
+    </div>
+    <h1 class="splash-title">BonScan</h1>
+    <p class="splash-sub" id="splash-sub">laden...</p>
+    <div class="splash-bar"><div class="splash-fill" id="splashFill"></div></div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app" style="display:none">
+
+  <!-- SIDEBAR (PC) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+        <rect width="64" height="64" rx="14" fill="url(#g2)"/>
+        <path d="M16 20h32M16 28h24M16 36h20M16 44h28" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="46" cy="42" r="10" fill="#22d3ee" fill-opacity=".25"/>
+        <path d="M42 42l3 3 5-5" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="g2" x1="0" y1="0" x2="64" y2="64"><stop stop-color="#1e3a5f"/><stop offset="1" stop-color="#0a1628"/></linearGradient></defs>
+      </svg>
+      <span>BonScan</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="snav-item active" data-page="scan" onclick="goPage('scan')">
+        <svg viewBox="0 0 24 24"><path d="M3 9V5a2 2 0 012-2h4M3 15v4a2 2 0 002 2h4M15 3h4a2 2 0 012 2v4M15 21h4a2 2 0 002-2v-4"/></svg>
+        <span id="sn-scan">Scannen</span>
+      </a>
+      <a class="snav-item" data-page="history" onclick="goPage('history')">
+        <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <span id="sn-hist">Geschiedenis</span>
+      </a>
+      <a class="snav-item" data-page="items" onclick="goPage('items')">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <span id="sn-items">Artikelen</span>
+      </a>
+      <a class="snav-item" data-page="projects" onclick="goPage('projects')">
+        <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 3h9a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+        <span id="sn-proj">Projecten</span>
+      </a>
+      <a class="snav-item" data-page="stats" onclick="goPage('stats')">
+        <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        <span id="sn-stats">Statistieken</span>
+      </a>
+      <a class="snav-item" data-page="settings" onclick="goPage('settings')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span id="sn-set">Instellingen</span>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="cloud-status" id="cloudStatus">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>
+        <span id="cloudTxt">Lokaal</span>
+      </div>
+      <div class="lang-sw">
+        <button onclick="setLang('nl')" id="lb-nl" class="lbtn active">NL</button>
+        <button onclick="setLang('en')" id="lb-en" class="lbtn">EN</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div id="content">
+
+    <!-- TOP BAR (mobile) -->
+    <header id="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <span id="topbar-title">BonScan</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="cloud-dot" id="cloudDot" title="Cloud status"></div>
+        <div class="lang-sw compact">
+          <button onclick="setLang('nl')" id="lb-nl2" class="lbtn active">NL</button>
+          <button onclick="setLang('en')" id="lb-en2" class="lbtn">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGES -->
+    <main id="pages">
+
+      <!-- SCAN PAGE -->
+      <div class="page active" id="page-scan">
+        <div class="page-header">
+          <h1 id="ph-scan">Bon Scannen</h1>
+          <p class="page-sub" id="ps-scan">Upload of fotografeer een kasticket</p>
+        </div>
+
+        <div class="upload-area" id="uploadArea" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+          <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)" style="display:none">
+          <div class="upload-visual">
+            <div class="upload-ring">
+              <svg viewBox="0 0 24 24" width="32" height="32"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+            </div>
+          </div>
+          <h3 id="ua-title">Sleep een foto hierheen</h3>
+          <p id="ua-sub">of klik om te bladeren · JPG, PNG, WEBP</p>
+          <div class="upload-actions">
+            <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16M14 14l1.586-1.586a2 2 0 012.828 0L20 20M14 8h.01"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+              <span id="btn-gallery">Gallerij</span>
+            </button>
+            <button class="btn btn-outline" onclick="openCameraCapture()">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span id="btn-camera">Camera</span>
+            </button>
+            <button class="btn btn-outline" onclick="goPage('manual')">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span id="btn-manual-lbl">Handmatig</span>
+            </button>
+            <button class="btn btn-ghost-cyan" onclick="loadDemo()">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+              Demo
+            </button>
+          </div>
+        </div>
+
+        <!-- CAMERA CAPTURE -->
+        <div id="cameraWrap" style="display:none">
+          <video id="cameraVideo" autoplay playsinline></video>
+          <div class="cam-controls">
+            <button class="btn btn-primary" onclick="capturePhoto()" id="captureBtn">📸</button>
+            <button class="btn btn-outline" onclick="closeCamera()">✕</button>
+          </div>
+          <canvas id="cameraCanvas" style="display:none"></canvas>
+        </div>
+
+        <!-- PROJECT SELECTOR -->
+        <div class="project-selector" id="projectSel">
+          <label class="field-label" id="lbl-proj-sel">Project (optioneel)</label>
+          <select id="scanProject" class="field-select">
+            <option value="" id="opt-no-proj">— Geen project —</option>
+          </select>
+        </div>
+
+        <!-- PROGRESS -->
+        <div id="scanProgress" style="display:none" class="scan-progress">
+          <div class="progress-header">
+            <span id="progressTxt">Analyseren...</span>
+            <span id="progressPct" class="mono">0%</span>
+          </div>
+          <div class="progress-track"><div id="progressBar" class="progress-bar-fill"></div></div>
+          <div class="progress-steps" id="progressSteps"></div>
+        </div>
+
+        <!-- RESULT -->
+        <div id="resultWrap" style="display:none">
+          <div class="result-hero">
+            <div class="result-store-icon" id="resStoreIcon">🏪</div>
+            <div class="result-store-info">
+              <h2 id="resStoreName">Winkel</h2>
+              <p id="resDate" class="result-date"></p>
+            </div>
+            <div class="result-total-badge">
+              <span class="rtb-label" id="rtb-total">Totaal</span>
+              <span class="rtb-amount" id="resTotalAmount">€0.00</span>
+            </div>
+          </div>
+
+          <div class="result-meta-grid">
+            <div class="rmg-cell"><span class="rmg-lbl" id="rml-cat">Categorie</span><span class="rmg-val" id="resCategory"></span></div>
+            <div class="rmg-cell"><span class="rmg-lbl" id="rml-pay">Betaling</span><span class="rmg-val" id="resPayment"></span></div>
+            <div class="rmg-cell"><span class="rmg-lbl" id="rml-btw">BTW</span><span class="rmg-val" id="resTax"></span></div>
+            <div class="rmg-cell"><span class="rmg-lbl" id="rml-items">Artikelen</span><span class="rmg-val" id="resItemCount"></span></div>
+          </div>
+
+          <div class="items-section">
+            <div class="items-header">
+              <span id="items-lbl">Artikelen</span>
+              <span class="items-total-lbl" id="items-total-lbl"></span>
+            </div>
+            <div id="resList" class="items-list"></div>
+          </div>
+
+          <div id="resNotes" style="display:none" class="ai-notes">
+            <div class="ai-notes-label">
+              <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 0v10M12 16h.01"/></svg>
+              AI Opmerkingen
+            </div>
+            <p id="resNotesText"></p>
+          </div>
+
+          <div class="result-actions">
+            <button class="btn btn-primary full" onclick="saveCurrentReceipt()">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span id="btn-save-res">Opslaan</span>
+            </button>
+            <button class="btn btn-outline" onclick="openEditModal(currentReceipt)">
+              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span id="btn-edit-res">Bewerken</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MANUAL PAGE -->
+      <div class="page" id="page-manual">
+        <div class="page-header">
+          <button class="back-btn" onclick="goPage('scan')">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <h1 id="ph-manual">Handmatige invoer</h1>
+        </div>
+        <div class="form-card">
+          <div class="form-row-2">
+            <div class="field-group"><label class="field-label" id="fl-store">Winkel</label><input class="field-input" id="m-store" type="text"></div>
+            <div class="field-group"><label class="field-label" id="fl-date">Datum</label><input class="field-input" id="m-date" type="date"></div>
+            <div class="field-group"><label class="field-label" id="fl-total">Totaalbedrag (€)</label><input class="field-input" id="m-total" type="number" step="0.01" min="0"></div>
+            <div class="field-group"><label class="field-label" id="fl-cat">Categorie</label>
+              <select class="field-select" id="m-cat">
+                <option value="food">🥦 Voeding</option><option value="drink">🥤 Drank</option>
+                <option value="hygiene">🧴 Hygiëne</option><option value="household">🏠 Huishouden</option>
+                <option value="electronics">💻 Elektronica</option><option value="clothing">👕 Kleding</option>
+                <option value="other">📦 Overig</option>
+              </select>
+            </div>
+            <div class="field-group"><label class="field-label" id="fl-proj">Project</label>
+              <select class="field-select" id="m-proj"><option value="">— Geen —</option></select>
+            </div>
+            <div class="field-group span-2"><label class="field-label" id="fl-notes">Notities</label><textarea class="field-input" id="m-notes" rows="2"></textarea></div>
+          </div>
+          <div class="section-title" id="fl-items-ttl" style="margin-top:16px">Artikelen</div>
+          <div id="m-items-list"></div>
+          <button class="add-row-btn" onclick="addManualItem()" id="btn-add-row">+ <span id="btn-add-row-txt">Artikel toevoegen</span></button>
+          <button class="btn btn-primary full mt" onclick="saveManual()" id="btn-save-man">Opslaan</button>
+        </div>
+      </div>
+
+      <!-- HISTORY PAGE -->
+      <div class="page" id="page-history">
+        <div class="page-header">
+          <h1 id="ph-hist">Geschiedenis</h1>
+          <div class="header-actions">
+            <button class="icon-btn" onclick="openExportMenu()" title="Export">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="hist-filters">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="histSearch" oninput="renderHistory()" placeholder="" id2="ph-search">
+          </div>
+          <select class="field-select compact" id="histSort" onchange="renderHistory()">
+            <option value="date-desc" id="hs-dd">Datum ↓</option>
+            <option value="date-asc" id="hs-da">Datum ↑</option>
+            <option value="total-desc" id="hs-td">Bedrag ↓</option>
+            <option value="total-asc" id="hs-ta">Bedrag ↑</option>
+          </select>
+          <select class="field-select compact" id="histProject" onchange="renderHistory()">
+            <option value="" id="hp-all">Alle projecten</option>
+          </select>
+        </div>
+        <div class="cat-chips" id="catChips"></div>
+        <div id="histList"></div>
+      </div>
+
+      <!-- ITEMS SEARCH PAGE -->
+      <div class="page" id="page-items">
+        <div class="page-header">
+          <h1 id="ph-items">Artikelen zoeken</h1>
+          <p class="page-sub" id="ps-items">Zoek door al je gekochte artikelen</p>
+        </div>
+        <div class="search-box big">
+          <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" id="itemSearch" oninput="renderItems()" placeholder="" id2="ph-item-search">
+        </div>
+        <div class="item-search-filters">
+          <select class="field-select compact" id="itemCatFilter" onchange="renderItems()">
+            <option value="" id="icf-all">Alle categorieën</option>
+            <option value="food" id="icf-food">Voeding</option>
+            <option value="drink" id="icf-drink">Drank</option>
+            <option value="hygiene" id="icf-hyg">Hygiëne</option>
+            <option value="household" id="icf-hou">Huishouden</option>
+            <option value="electronics" id="icf-elec">Elektronica</option>
+            <option value="clothing" id="icf-clo">Kleding</option>
+            <option value="other" id="icf-oth">Overig</option>
+          </select>
+          <select class="field-select compact" id="itemSort" onchange="renderItems()">
+            <option value="name-asc" id="is-na">Naam A-Z</option>
+            <option value="price-desc" id="is-pd">Prijs ↓</option>
+            <option value="freq-desc" id="is-fd">Meest gekocht</option>
+          </select>
+        </div>
+        <div class="items-stats-bar" id="itemsStatsBar"></div>
+        <div id="itemSearchResults"></div>
+      </div>
+
+      <!-- PROJECTS PAGE -->
+      <div class="page" id="page-projects">
+        <div class="page-header">
+          <h1 id="ph-proj">Projecten</h1>
+          <button class="btn btn-primary compact" onclick="openNewProjectModal()" id="btn-new-proj">+ Nieuw project</button>
+        </div>
+        <div id="projectsList"></div>
+      </div>
+
+      <!-- STATS PAGE -->
+      <div class="page" id="page-stats">
+        <div class="page-header">
+          <h1 id="ph-stats">Statistieken</h1>
+          <select class="field-select compact" id="statsPeriod" onchange="renderStats()">
+            <option value="all" id="sp-all">Alle tijd</option>
+            <option value="year" id="sp-year">Dit jaar</option>
+            <option value="month" id="sp-month">Deze maand</option>
+            <option value="quarter" id="sp-q">Kwartaal</option>
+          </select>
+        </div>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="charts-grid">
+          <div class="chart-card span-2">
+            <div class="chart-title" id="ct-monthly">Uitgaven per maand</div>
+            <canvas id="chartMonthly" height="200"></canvas>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title" id="ct-cat">Per categorie</div>
+            <canvas id="chartCat" height="220"></canvas>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title" id="ct-day">Per weekdag</div>
+            <canvas id="chartDay" height="220"></canvas>
+          </div>
+          <div class="chart-card span-2">
+            <div class="chart-title" id="ct-trend">Uitgaven trend (30 dagen)</div>
+            <canvas id="chartTrend" height="160"></canvas>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title" id="ct-hour">Per tijdstip</div>
+            <canvas id="chartHour" height="200"></canvas>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title" id="ct-proj-chart">Per project</div>
+            <canvas id="chartProj" height="200"></canvas>
+          </div>
+        </div>
+        <div class="chart-card" style="margin-top:16px">
+          <div class="chart-title" id="ct-topstores">Top winkels</div>
+          <div id="topStoresList"></div>
+        </div>
+        <div class="chart-card" style="margin-top:16px">
+          <div class="chart-title" id="ct-topitems">Meest gekochte artikelen</div>
+          <div id="topItemsList"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PAGE -->
+      <div class="page" id="page-settings">
+        <div class="page-header"><h1 id="ph-set">Instellingen</h1></div>
+
+        <div class="settings-section">
+          <div class="settings-title" id="st-cloud">☁️ Cloud opslag (Firebase)</div>
+          <div class="settings-desc" id="sd-cloud">Sla bonnen op in de gratis Firebase cloud. Werkt op al je apparaten.</div>
+          <div class="firebase-setup" id="firebaseSetup">
+            <div class="field-group"><label class="field-label">Firebase API Key</label><input class="field-input" id="fb-apikey" type="text" placeholder="AIza..."></div>
+            <div class="field-group"><label class="field-label">Auth Domain</label><input class="field-input" id="fb-domain" type="text" placeholder="xxx.firebaseapp.com"></div>
+            <div class="field-group"><label class="field-label">Project ID</label><input class="field-input" id="fb-projid" type="text" placeholder="mijn-project-id"></div>
+            <button class="btn btn-primary" onclick="connectFirebase()" id="btn-fb-connect">Verbinden</button>
+            <button class="btn btn-outline" onclick="showFirebaseGuide()" id="btn-fb-guide">📖 Handleiding</button>
+          </div>
+          <div class="cloud-connected" id="cloudConnected" style="display:none">
+            <div class="connected-badge">✅ <span id="fb-connected-txt">Verbonden met Firebase</span></div>
+            <button class="btn btn-danger-sm" onclick="disconnectFirebase()" id="btn-fb-disconnect">Verbreken</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-title" id="st-api">🤖 Claude API (AI analyse)</div>
+          <div class="settings-desc" id="sd-api">Voer je gratis Anthropic API key in voor AI-analyse van kastickets.</div>
+          <div class="field-group"><label class="field-label">API Key</label>
+            <div style="display:flex;gap:8px">
+              <input class="field-input" id="apiKey" type="password" placeholder="sk-ant-...">
+              <button class="btn btn-outline compact" onclick="toggleApiKeyVisibility()" id="btn-toggle-key">👁</button>
+            </div>
+          </div>
+          <button class="btn btn-primary compact mt" onclick="saveApiKey()" id="btn-save-api">Opslaan</button>
+          <div class="settings-note" id="api-note">Je key wordt alleen lokaal opgeslagen en nooit naar onze servers gestuurd.</div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-title" id="st-data">📦 Data beheer</div>
+          <div class="settings-btns">
+            <button class="btn btn-outline" onclick="exportAll('json')" id="btn-exp-json">📥 Export JSON</button>
+            <button class="btn btn-outline" onclick="exportAll('csv')" id="btn-exp-csv">📊 Export CSV</button>
+            <button class="btn btn-outline" onclick="importData()" id="btn-import">📤 Importeer JSON</button>
+            <button class="btn btn-danger-sm" onclick="clearAll()" id="btn-clear-all">🗑️ Alles wissen</button>
+          </div>
+          <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-title" id="st-pwa">📱 App installeren</div>
+          <div class="settings-desc" id="sd-pwa">Installeer BonScan als app op je telefoon of computer.</div>
+          <div class="pwa-steps">
+            <div class="pwa-step"><strong>Android:</strong> Chrome-menu → "Toevoegen aan startscherm"</div>
+            <div class="pwa-step"><strong>iOS:</strong> Safari Delen → "Zet op beginscherm"</div>
+            <div class="pwa-step"><strong>PC/Mac:</strong> Adresbalk → installatie-icoon rechts</div>
+          </div>
+          <button class="btn btn-primary compact" id="installBtn" style="display:none" onclick="installPWA()" id2="btn-install">📲 Installeren</button>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-title">ℹ️ Over BonScan</div>
+          <div class="about-info">
+            <p>BonScan v2.0 — Kasticket scanner met AI</p>
+            <p>Gratis te gebruiken · Open source</p>
+            <p>Gebouwd met Claude Vision API</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL OVERLAY -->
+<div id="overlay" onclick="closeModal()"></div>
+<div id="modal">
+  <div class="modal-head">
+    <h3 id="modalTitle">Modal</h3>
+    <button class="close-btn" onclick="closeModal()">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div id="modalBody"></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav id="bottomNav">
+  <button class="bnav active" data-page="scan" onclick="goPage('scan')">
+    <svg viewBox="0 0 24 24"><path d="M3 9V5a2 2 0 012-2h4M3 15v4a2 2 0 002 2h4M15 3h4a2 2 0 012 2v4M15 21h4a2 2 0 002-2v-4"/></svg>
+    <span id="bn-scan">Scan</span>
+  </button>
+  <button class="bnav" data-page="history" onclick="goPage('history')">
+    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    <span id="bn-hist">Bonnen</span>
+  </button>
+  <button class="bnav" data-page="items" onclick="goPage('items')">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <span id="bn-items">Zoeken</span>
+  </button>
+  <button class="bnav" data-page="projects" onclick="goPage('projects')">
+    <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h3l2 3h9a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+    <span id="bn-proj">Projecten</span>
+  </button>
+  <button class="bnav" data-page="stats" onclick="goPage('stats')">
+    <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+    <span id="bn-stats">Stats</span>
+  </button>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
