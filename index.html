@@ -1481,7 +1481,11 @@ Be precise with amounts. If unreadable, make reasonable estimate. Return ONLY JS
 
   try {
     setProgress(50, 1);
-    const headers = { 'Content-Type': 'application/json' };
+    const headers = {
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    };
     if (apiKey) headers['x-api-key'] = apiKey;
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -1515,7 +1519,9 @@ Be precise with amounts. If unreadable, make reasonable estimate. Return ONLY JS
     displayResult(receipt);
   } catch (err) {
     prog.style.display = 'none';
-    showToast(t('toast_error'), 'error');
+    const errMsg = err.message || 'Onbekende fout';
+    showToast('❌ ' + errMsg.slice(0, 60), 'error');
+    console.error('Scan error:', err);
   }
 }
 
@@ -2349,7 +2355,7 @@ document.addEventListener('DOMContentLoaded', boot);
 
 // Service Worker registration for PWA
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
+  // SW disabled for GitHub Pages subfolder compatibility
 }
 
 </script>
